@@ -59,6 +59,18 @@ python evaluate.py --model_path models/stock_transformer.pth --symbol AAPL
 - Returns: Daily price returns
 - Volume: Trading volume normalization
 
+## Testing
+
+Run the simple test to verify everything works:
+```bash
+python3 test_simple.py
+```
+
+Or run the full demo:
+```bash
+python3 demo.py
+```
+
 ## Disclaimer
 
 This project is for educational purposes only. Stock prediction is inherently difficult and past performance does not guarantee future results. Always do your own research and consider consulting with financial advisors before making investment decisions.

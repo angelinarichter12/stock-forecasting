@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Demo Script for Stock Transformer Predictor
+Demo script for stock transformer predictor
 Runs the complete pipeline with a smaller dataset for quick testing
 """
 
@@ -12,19 +12,19 @@ from datetime import datetime, timedelta
 def run_command(command, description):
     """Run a command and print the description"""
     print(f"\n{'='*60}")
-    print(f"🔄 {description}")
+    print(f"{description}")
     print(f"{'='*60}")
     print(f"Running: {command}")
     
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-        print("✅ Success!")
+        print("Success!")
         if result.stdout:
             print("Output:")
             print(result.stdout)
         return True
     except subprocess.CalledProcessError as e:
-        print("❌ Error!")
+        print("Error!")
         print(f"Error: {e}")
         if e.stdout:
             print("Stdout:")
@@ -35,7 +35,7 @@ def run_command(command, description):
         return False
 
 def main():
-    print("🚀 Stock Transformer Predictor Demo")
+    print("Stock Transformer Predictor Demo")
     print("This demo will run the complete pipeline with a smaller dataset")
     
     # Set demo parameters
@@ -43,7 +43,7 @@ def main():
     end_date = datetime.now().strftime("%Y-%m-%d")
     start_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")  # 1 year of data
     
-    print(f"\n📊 Demo Configuration:")
+    print(f"\nDemo Configuration:")
     print(f"Symbol: {symbol}")
     print(f"Date Range: {start_date} to {end_date}")
     print(f"Training: 10 epochs (demo mode)")
@@ -64,23 +64,23 @@ def main():
         return
     
     print(f"\n{'='*60}")
-    print("🎉 Demo completed successfully!")
+    print("Demo completed successfully!")
     print(f"{'='*60}")
-    print("\n📁 Generated files:")
+    print("\nGenerated files:")
     print("  - data/demo_data.csv (stock data with technical indicators)")
     print("  - models/demo_model.pth (trained model)")
     print("  - demo_results/ (evaluation results and plots)")
     print("  - training_results.json (training metrics)")
     print("  - plots/ (training history and confusion matrix)")
     
-    print("\n📈 Next steps:")
+    print("\nNext steps:")
     print("  1. Check demo_results/evaluation_results.json for performance metrics")
     print("  2. View plots in demo_results/ and plots/ directories")
     print("  3. Run with more epochs for better performance:")
     print("     python train.py --epochs 100 --batch_size 32")
     print("  4. Try different stocks: python train.py --symbol TSLA")
     
-    print("\n⚠️  Disclaimer:")
+    print("\nDisclaimer:")
     print("  This is for educational purposes only. Stock prediction is inherently")
     print("  difficult and past performance does not guarantee future results.")
 

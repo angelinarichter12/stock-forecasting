@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Trading Agent Structure for Stock Prediction
+Trading agent for stock prediction
 Autonomous trading agent that uses the transformer model
 """
 
@@ -187,65 +187,80 @@ class TradingAgent:
             action = self.get_trading_strategy(prediction)
             
             if action != 'HOLD':
-                # Execute trade
-                trade = self.execute_trade(
+                self.execute_trade(
                     symbol=symbol,
                     action=action,
                     price=prediction['current_price'],
                     confidence=prediction['confidence']
                 )
                 trades_executed += 1
-            
-            # Print status
-            print(f"{symbol}: {prediction['prediction']} (Confidence: {prediction['confidence']:.2f}) -> {action}")
+            else:
+                print(f"{symbol}: {prediction['prediction']} (Confidence: {prediction['confidence']:.3f}) -> HOLD")
         
-        # Print final status
-        total_value = self.balance
+        # Calculate final value
+        final_value = self.balance
         if self.position > 0:
-            # Estimate current value of position
-            total_value += self.position * prediction['current_price']
+            # Assume current price for remaining position
+            final_value += self.position * prediction['current_price']
         
         print(f"\nTrading session completed!")
         print(f"Final balance: ${self.balance:.2f}")
-        print(f"Total value: ${total_value:.2f}")
-        print(f"Return: {((total_value - self.initial_balance) / self.initial_balance * 100):.2f}%")
+        print(f"Total value: ${final_value:.2f}")
+        print(f"Return: {((final_value - self.initial_balance) / self.initial_balance * 100):.2f}%")
         print(f"Trades executed: {trades_executed}")
+        
+        # Print performance metrics
+        metrics = self.get_performance_metrics()
+        print(f"\nPerformance Metrics:")
+        print(f"Total Return: {metrics['total_return']:.2f}%")
+        print(f"Sharpe Ratio: {metrics['sharpe_ratio']:.2f}")
+        print(f"Max Drawdown: {metrics['max_drawdown']:.2f}%")
+        print(f"Win Rate: {metrics['win_rate']:.2f}%")
     
     def get_performance_metrics(self) -> Dict:
         """Calculate performance metrics"""
         if not self.trades:
-            return {}
+            return {
+                'total_return': 0.0,
+                'sharpe_ratio': 0.0,
+                'max_drawdown': 0.0,
+                'win_rate': 0.0
+            }
         
-        # Calculate metrics
-        total_trades = len(self.trades)
-        profitable_trades = len([t for t in self.trades if t.get('profit', 0) > 0])
-        win_rate = profitable_trades / total_trades if total_trades > 0 else 0
+        # Calculate returns
+        returns = []
+        for trade in self.trades:
+            if trade['type'] == 'SELL' and 'profit' in trade:
+                returns.append(trade['profit'] / trade['balance_before'])
         
-        total_profit = sum([t.get('profit', 0) for t in self.trades])
-        total_return = (self.balance - self.initial_balance) / self.initial_balance
+        if not returns:
+            return {
+                'total_return': 0.0,
+                'sharpe_ratio': 0.0,
+                'max_drawdown': 0.0,
+                'win_rate': 0.0
+            }
+        
+        total_return = sum(returns) * 100
+        sharpe_ratio = np.mean(returns) / np.std(returns) if np.std(returns) > 0 else 0
+        max_drawdown = min(returns) * 100 if returns else 0
+        win_rate = len([r for r in returns if r > 0]) / len(returns) * 100
         
         return {
-            'total_trades': total_trades,
-            'profitable_trades': profitable_trades,
-            'win_rate': win_rate,
-            'total_profit': total_profit,
             'total_return': total_return,
-            'final_balance': self.balance
+            'sharpe_ratio': sharpe_ratio,
+            'max_drawdown': max_drawdown,
+            'win_rate': win_rate
         }
 
 def main():
     # Example usage
-    agent = TradingAgent('models/aapl_advanced_final.pth', initial_balance=10000)
+    model_path = "models/aapl_advanced_final.pth"
+    agent = TradingAgent(model_path, initial_balance=10000)
     
-    # Run trading session
-    symbols = ['AAPL', 'TSLA', 'MSFT', 'GOOGL']
+    # Test with some popular stocks
+    symbols = ["AAPL", "TSLA", "MSFT", "GOOGL"]
     agent.run_trading_session(symbols, max_trades=5)
-    
-    # Print performance
-    metrics = agent.get_performance_metrics()
-    print(f"\nPerformance Metrics:")
-    for key, value in metrics.items():
-        print(f"{key}: {value}")
 
 if __name__ == "__main__":
     main() 

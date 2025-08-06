@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Simple Test Script for Stock Forecasting Project
-Tests the basic functionality step by step
+Simple test script for the stock forecasting project
+Tests basic functionality step by step
 """
 
 import torch
@@ -14,23 +14,23 @@ from datetime import datetime, timedelta
 
 def test_data_loading():
     """Test 1: Data Loading"""
-    print("🧪 Test 1: Data Loading")
+    print("Test 1: Data Loading")
     print("=" * 50)
     
     try:
         # Load existing data
         df = pd.read_csv('data/aapl_advanced.csv')
-        print(f"✅ Successfully loaded data with {len(df)} rows and {len(df.columns)} columns")
+        print(f"Successfully loaded data with {len(df)} rows and {len(df.columns)} columns")
         print(f"   Date range: {df['Date'].min()} to {df['Date'].max()}")
         print(f"   Target distribution: {df['Target'].value_counts().to_dict()}")
         return True
     except Exception as e:
-        print(f"❌ Failed to load data: {e}")
+        print(f"Failed to load data: {e}")
         return False
 
 def test_model_loading():
     """Test 2: Model Loading"""
-    print("\n🧪 Test 2: Model Loading")
+    print("\nTest 2: Model Loading")
     print("=" * 50)
     
     try:
@@ -49,18 +49,18 @@ def test_model_loading():
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
         
-        print(f"✅ Successfully loaded model")
+        print(f"Successfully loaded model")
         print(f"   Model parameters: {sum(p.numel() for p in model.parameters()):,}")
         print(f"   Input dimension: {len(feature_columns)}")
         print(f"   D_model: {checkpoint['args']['d_model']}")
         return model
     except Exception as e:
-        print(f"❌ Failed to load model: {e}")
+        print(f"Failed to load model: {e}")
         return None
 
 def test_prediction(model):
     """Test 3: Making Predictions"""
-    print("\n🧪 Test 3: Making Predictions")
+    print("\nTest 3: Making Predictions")
     print("=" * 50)
     
     try:
@@ -84,19 +84,19 @@ def test_prediction(model):
             prediction = torch.argmax(probabilities, dim=1).item()
             confidence = probabilities[0][prediction].item()
         
-        print(f"✅ Successfully made prediction")
+        print(f"Successfully made prediction")
         print(f"   Prediction: {'UP' if prediction == 1 else 'DOWN'}")
         print(f"   Confidence: {confidence:.3f}")
         print(f"   Probabilities: UP={probabilities[0][1].item():.3f}, DOWN={probabilities[0][0].item():.3f}")
         
         return True
     except Exception as e:
-        print(f"❌ Failed to make prediction: {e}")
+        print(f"Failed to make prediction: {e}")
         return False
 
 def test_live_data():
     """Test 4: Live Data Fetching"""
-    print("\n🧪 Test 4: Live Data Fetching")
+    print("\nTest 4: Live Data Fetching")
     print("=" * 50)
     
     try:
@@ -108,26 +108,26 @@ def test_live_data():
         df = ticker.history(start=start_date, end=end_date)
         
         if df.empty:
-            print("❌ No data fetched")
+            print("No data fetched")
             return False
         
         # Calculate technical indicators
         df = df.reset_index()
         df = calculate_technical_indicators(df)
         
-        print(f"✅ Successfully fetched live data")
+        print(f"Successfully fetched live data")
         print(f"   Rows: {len(df)}")
         print(f"   Date range: {df['Date'].min()} to {df['Date'].max()}")
         print(f"   Features: {len(df.columns)}")
         
         return True
     except Exception as e:
-        print(f"❌ Failed to fetch live data: {e}")
+        print(f"Failed to fetch live data: {e}")
         return False
 
 def test_ensemble():
     """Test 5: Ensemble Model"""
-    print("\n🧪 Test 5: Ensemble Model")
+    print("\nTest 5: Ensemble Model")
     print("=" * 50)
     
     try:
@@ -149,54 +149,54 @@ def test_ensemble():
         # Make ensemble prediction
         prediction, confidence = ensemble.predict(input_tensor)
         
-        print(f"✅ Successfully tested ensemble model")
+        print(f"Successfully tested ensemble model")
         print(f"   Prediction: {'UP' if prediction == 1 else 'DOWN'}")
         print(f"   Confidence: {confidence:.3f}")
         
         return True
     except Exception as e:
-        print(f"❌ Failed to test ensemble: {e}")
+        print(f"Failed to test ensemble: {e}")
         return False
 
 def main():
     """Run all tests"""
-    print("🚀 Stock Forecasting Project - Simple Tests")
+    print("Stock Forecasting Project - Simple Tests")
     print("=" * 60)
     
     # Test 1: Data Loading
     if not test_data_loading():
-        print("❌ Data loading failed. Stopping tests.")
+        print("Data loading failed. Stopping tests.")
         return
     
     # Test 2: Model Loading
     model = test_model_loading()
     if model is None:
-        print("❌ Model loading failed. Stopping tests.")
+        print("Model loading failed. Stopping tests.")
         return
     
     # Test 3: Predictions
     if not test_prediction(model):
-        print("❌ Prediction failed.")
+        print("Prediction failed.")
     
     # Test 4: Live Data
     if not test_live_data():
-        print("❌ Live data fetching failed.")
+        print("Live data fetching failed.")
     
     # Test 5: Ensemble
     try:
         test_ensemble()
     except:
-        print("❌ Ensemble test failed (optional).")
+        print("Ensemble test failed (optional).")
     
-    print("\n🎉 Testing completed!")
-    print("\n📊 Summary:")
-    print("   - Data loading: ✅")
-    print("   - Model loading: ✅")
-    print("   - Predictions: ✅")
-    print("   - Live data: ✅")
-    print("   - Ensemble: ⚠️ (optional)")
+    print("\nTesting completed!")
+    print("\nSummary:")
+    print("   - Data loading: OK")
+    print("   - Model loading: OK")
+    print("   - Predictions: OK")
+    print("   - Live data: OK")
+    print("   - Ensemble: Optional")
     
-    print("\n🚀 Next steps:")
+    print("\nNext steps:")
     print("   1. Run full evaluation: python3 evaluate.py --model_path models/aapl_advanced_final.pth")
     print("   2. Test with different stocks: python3 data/fetch_data.py --symbol TSLA")
     print("   3. Try the trading agent: python3 trading_agent.py")
